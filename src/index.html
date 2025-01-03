@@ -92,7 +92,7 @@ https://cdn.jsdelivr.net/npm/leaflet-sidebar-v2@3.2.3/css/leaflet-sidebar.min.cs
             <div id="attribution"><strong>EO4PORTS: Low Tide Line tracking</strong><br>
               <img src="./examples/E4PORTS_logo.png" alt="Feature Image" style="width: 50%; max-height: 300px; object-fit: contain;" /><br>
               EO4PORTS is a research and development project funded by ESA with the objective to leverage Earth Observation data to improve port operations in Europe.<br><br>
-              This platform presents the <strong>Low-tide line tracking</strong>, one of the three EO products developed for EO4PORTS. 
+              This platform presents the <strong>Low Tide Line tracking</strong> product, one of the three EO products developed for EO4PORTS. 
               This product uses optical satellite images from Landsat and Sentinel-2 to map the position of the low tide line, which captures
               sandy features around ports and navigation channels.
           </div>
@@ -111,7 +111,7 @@ https://cdn.jsdelivr.net/npm/leaflet-sidebar-v2@3.2.3/css/leaflet-sidebar.min.cs
         closeButton: true,    // whether t add a close button to the panes
         container: 'sidebar', // the DOM container or #ID of a predefined sidebar container that should be used
         position: 'right',     // left or right
-    }).addTo(map)//.open("home")
+    }).addTo(map).open("home")
 
     var baseMaps = {
       "OSM": L.tileLayer.provider("OpenStreetMap.Mapnik"),
@@ -160,49 +160,50 @@ https://cdn.jsdelivr.net/npm/leaflet-sidebar-v2@3.2.3/css/leaflet-sidebar.min.cs
             };
           },
           onEachFeature: function (feature, layer) {
+            const selectedAttributes = ['tile','date','images_in_composite','mean_tide_level','springs_tide_range'];
+            // Extract attributes for the popup
+            const properties = feature.properties || {};
+            const attributes = Object.entries(properties)
+              .filter(([key]) => selectedAttributes.includes(key))
+              .map(([key, value]) => `<strong>${key}:</strong> ${value}`)
+              .join("<br>");
+            // Extract the image URL (assumed to be in an "image_url" property)
+            const imageUrl = `./data/Wadden_Sea/2_tides/${properties.tile}_tide_timeseries_v5.jpg`;
+            // Create popup content
+            let popupContent = `<div>${attributes}</div>`;
+            // if (imageUrl) {
+            //     popupContent += `<div style="margin-top: 10px;">
+            //         <img src="${imageUrl}" alt="Feature Image" style="width: 100%; max-height: 700px; object-fit: contain;" />
+            //     </div>`;
+            // }
 
-                        // Extract attributes for the popup
-                        const properties = feature.properties || {};
-                        const attributes = Object.entries(properties)
-                            .map(([key, value]) => `<strong>${key}:</strong> ${value}`)
-                            .join("<br>");
-                        // Extract the image URL (assumed to be in an "image_url" property)
-                        const imageUrl = `./data/Wadden_Sea/2_tides/${properties.tile}_tide_timeseries_v5.jpg`;
-                        // Create popup content
-                        let popupContent = `<div>${attributes}</div>`;
-                        // if (imageUrl) {
-                        //     popupContent += `<div style="margin-top: 10px;">
-                        //         <img src="${imageUrl}" alt="Feature Image" style="width: 100%; max-height: 700px; object-fit: contain;" />
-                        //     </div>`;
-                        // }
+            // Bind the popup to the layer
+            layer.bindPopup(popupContent, {
+                maxWidth: 500, // Set maximum width
+                minWidth: 300  // Set minimum width
+            });
 
-                        // Bind the popup to the layer
-                        layer.bindPopup(popupContent, {
-                            maxWidth: 500, // Set maximum width
-                            minWidth: 300  // Set minimum width
-                        });
+            // Highlight the line on mouseover
+            layer.on('mouseover', function () {
+                layer.setStyle({
+                    color: "yellow",   // Highlight color
+                    weight: 3       // Highlight width
+                });
+            });
 
-                        // Highlight the line on mouseover
-                        layer.on('mouseover', function () {
-                            layer.setStyle({
-                                color: "red",   // Highlight color
-                                weight: 3       // Highlight width
-                            });
-                        });
+            // Reset the line style on mouseout
+            layer.on('mouseout', function () {
+                layer.setStyle({
+                    color: "black", // Default color
+                    weight: 1       // Default width
+                });
+            });
 
-                        // Reset the line style on mouseout
-                        layer.on('mouseout', function () {
-                            layer.setStyle({
-                                color: "black", // Default color
-                                weight: 1       // Default width
-                            });
-                        });
-
-                        // Open popup on click
-                        layer.on('click', function () {
-                            layer.openPopup();
-                        });
-                    }
+            // Open popup on click
+            layer.on('click', function () {
+                layer.openPopup();
+            });
+        }
           });
           contourLayer.addTo(map);
           // Add the GeoJSON layer to the map and layer control
