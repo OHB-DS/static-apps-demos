@@ -90,7 +90,7 @@ https://cdn.jsdelivr.net/npm/leaflet-sidebar-v2@3.2.3/css/leaflet-sidebar.min.cs
       <div class="leaflet-sidebar-content">
           <div class="leaflet-sidebar-pane" id="home">
             <div id="attribution"><strong>EO4PORTS: Low Tide Line tracking</strong><br>
-              <img src="./examples/E4PORTS_logo.png" alt="Feature Image" style="width: 50%; max-height: 300px; object-fit: contain;" /><br>
+              <img src="https://lowtideline.blob.core.windows.net/data/examples/E4PORTS_logo.png" alt="Logo EO4PORTS" style="width: 50%; max-height: 300px; object-fit: contain;" /><br>
               EO4PORTS is a research and development project funded by ESA with the objective to leverage Earth Observation data to improve port operations in Europe.<br><br>
               This platform presents the <strong>Low Tide Line tracking</strong> product, one of the three EO products developed for EO4PORTS. 
               This product uses optical satellite images from Landsat and Sentinel-2 to map the position of the low tide line, which captures
@@ -140,7 +140,7 @@ https://cdn.jsdelivr.net/npm/leaflet-sidebar-v2@3.2.3/css/leaflet-sidebar.min.cs
     ///////////////////////////////////////////////////////////////////////////
     // LOW TIDE LINES
     ///////////////////////////////////////////////////////////////////////////
-    const fp = "./data/Wadden_Sea/3_geojson";
+    const fp = "https://lowtideline.blob.core.windows.net/data/3_geojson";
     const fn = "Wadden_Sea_lowtideline_2024_v5.geojson";
     const full_path_geojson = `${fp}/${fn}`;
     console.log(full_path_geojson);
@@ -213,7 +213,7 @@ https://cdn.jsdelivr.net/npm/leaflet-sidebar-v2@3.2.3/css/leaflet-sidebar.min.cs
     ///////////////////////////////////////////////////////////////////////////
     // GRID CELLS
     ///////////////////////////////////////////////////////////////////////////
-    const full_path_tiles = "./ROIs/Wadden_Sea_grid_sel.geojson";
+    const full_path_tiles = "https://lowtideline.blob.core.windows.net/data/ROIs/Wadden_Sea_grid_sel.geojson";
     $.getJSON(full_path_tiles, function (geojson) {
       console.log(geojson)
       for (var f of geojson.features) {
@@ -239,7 +239,7 @@ https://cdn.jsdelivr.net/npm/leaflet-sidebar-v2@3.2.3/css/leaflet-sidebar.min.cs
                             .join("<br>");
 
                         // Extract the image URL
-                        const imageUrl = `./data/Wadden_Sea/1_images/simple/${prefix}_${properties.grid_id}_${suffix}.jpg`;
+                        const imageUrl = `https://lowtideline.blob.core.windows.net/data/1_images/simple/${prefix}_${properties.grid_id}_${suffix}.jpg`;
 
                         // Create popup content
                         let popupContent = `<div>${attributes}</div>`;
@@ -251,7 +251,7 @@ https://cdn.jsdelivr.net/npm/leaflet-sidebar-v2@3.2.3/css/leaflet-sidebar.min.cs
 
                         // Bind the popup to the layer
                         layer.bindPopup(popupContent, {
-                            maxWidth: 700, // Set maximum width
+                            maxWidth: 600, // Set maximum width
                             minWidth: 400  // Set minimum width
                         });
 
