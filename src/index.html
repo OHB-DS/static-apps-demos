@@ -116,7 +116,7 @@ https://cdn.jsdelivr.net/npm/leaflet-sidebar-v2@3.2.3/css/leaflet-sidebar.min.cs
           employ Earth Observation
           data to provide useful insights for port operators in Europe.<br><br>
           This map shows the <strong>latest low tide line</strong>, obtained from a combination of <strong>Landsat and
-            Sentinel-2</strong> optical images. This line delineates the bathymetry and highlights the
+          Sentinel-2</strong> optical images. This line delineates the low-tide bathymetry and highlights the
           presence of transient features like sand banks, shoals and channels that may hinder
           <strong>navigability</strong>. This product provides a recent snapshot of the state of the intertidal zone and
           can inform port operators and dredging companies of potential obstacles that may delay operations.
@@ -191,17 +191,17 @@ https://cdn.jsdelivr.net/npm/leaflet-sidebar-v2@3.2.3/css/leaflet-sidebar.min.cs
             };
           },
           onEachFeature: function (feature, layer) {
-            const selectedAttributes = ['tile', 'date', 'images_in_composite', 'mean_tide_level', 'springs_tide_range'];
+            // const selectedAttributes = ['tile', 'date', 'images_in_composite', 'mean_tide_level', 'springs_tide_range'];
             // Extract attributes for the popup
-            const properties = feature.properties || {};
-            const attributes = Object.entries(properties)
-              .filter(([key]) => selectedAttributes.includes(key))
-              .map(([key, value]) => `<strong>${key}:</strong> ${value}`)
-              .join("<br>");
+            // const properties = feature.properties || {};
+            // const attributes = Object.entries(properties)
+            //   .filter(([key]) => selectedAttributes.includes(key))
+            //   .map(([key, value]) => `<strong>${key}:</strong> ${value}`)
+            //   .join("<br>");
             // Extract the image URL (assumed to be in an "image_url" property)
-            const imageUrl = `./data/Wadden_Sea/2_tides/${properties.tile}_tide_timeseries_v5.jpg`;
+            // const imageUrl = `./data/Wadden_Sea/2_tides/${properties.tile}_tide_timeseries_v5.jpg`;
             // Create popup content
-            let popupContent = `<div>${attributes}</div>`;
+            // let popupContent = `<div>${attributes}</div>`;
             // if (imageUrl) {
             //     popupContent += `<div style="margin-top: 10px;">
             //         <img src="${imageUrl}" alt="Feature Image" style="width: 100%; max-height: 700px; object-fit: contain;" />
@@ -209,31 +209,31 @@ https://cdn.jsdelivr.net/npm/leaflet-sidebar-v2@3.2.3/css/leaflet-sidebar.min.cs
             // }
 
             // Bind the popup to the layer
-            layer.bindPopup(popupContent, {
-              maxWidth: 500, // Set maximum width
-              minWidth: 300  // Set minimum width
-            });
+            // layer.bindPopup(popupContent, {
+            //   maxWidth: 500, // Set maximum width
+            //   minWidth: 300  // Set minimum width
+            // });
 
             // Highlight the line on mouseover
-            layer.on('mouseover', function () {
-              layer.setStyle({
-                color: "yellow",   // Highlight color
-                weight: 3       // Highlight width
-              });
-            });
+            // layer.on('mouseover', function () {
+            //   layer.setStyle({
+            //     color: "yellow",   // Highlight color
+            //     weight: 3       // Highlight width
+            //   });
+            // });
 
             // Reset the line style on mouseout
-            layer.on('mouseout', function () {
-              layer.setStyle({
-                color: "black", // Default color
-                weight: 1       // Default width
-              });
-            });
+            // layer.on('mouseout', function () {
+            //   layer.setStyle({
+            //     color: "black", // Default color
+            //     weight: 1       // Default width
+            //   });
+            // });
 
             // Open popup on click
-            layer.on('click', function () {
-              layer.openPopup();
-            });
+            // layer.on('click', function () {
+            //   layer.openPopup();
+            // });
           }
         });
         contourLayer.addTo(map);
@@ -261,7 +261,7 @@ https://cdn.jsdelivr.net/npm/leaflet-sidebar-v2@3.2.3/css/leaflet-sidebar.min.cs
             };
           },
           onEachFeature: function (feature, layer) {
-            const selectedAttributes = ["grid_id"];
+            const selectedAttributes = ['date','grid_id','images_in_composite', 'mean_tide_level', 'springs_tide_range'];
             // Extract attributes for the popup
             const properties = feature.properties || {};
             const attributes = Object.entries(properties)
@@ -282,8 +282,8 @@ https://cdn.jsdelivr.net/npm/leaflet-sidebar-v2@3.2.3/css/leaflet-sidebar.min.cs
 
             // Bind the popup to the layer
             layer.bindPopup(popupContent, {
-              maxWidth: 600, // Set maximum width
-              minWidth: 400  // Set minimum width
+              maxWidth: 500, // Set maximum width
+              minWidth: 300  // Set minimum width
             });
 
             // Highlight the line on mouseover
