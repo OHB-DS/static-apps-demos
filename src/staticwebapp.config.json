@@ -1,0 +1,12 @@
+{
+    "routes": [
+      {
+        "route": "/",
+        "serve": "/index.html"
+      },
+      {
+        "route": "/ewenetz",
+        "serve": "/index2.html"
+      }
+    ]
+  }
