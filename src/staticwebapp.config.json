@@ -6,7 +6,7 @@
       },
       {
         "route": "/ewenetz",
-        "serve": "/index2.html"
+        "serve": "/ewenetz/index.html"
       }
     ]
   }
