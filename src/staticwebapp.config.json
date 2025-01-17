@@ -1,7 +1,7 @@
 {
     "routes": [
       {
-        "route": "/eo4ports",
+        "route": "/",
         "serve": "/eo4ports/index.html"
       },
       {
