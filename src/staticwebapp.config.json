@@ -7,6 +7,10 @@
       {
         "route": "/ewenetz",
         "serve": "/ewenetz/index.html"
+      },
+      {
+        "route": "/image_viewer.html",
+        "serve": "/ewenetz/image_viewer.html"
       }
     ]
   }
