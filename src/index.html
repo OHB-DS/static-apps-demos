@@ -83,7 +83,7 @@
       border-radius: 5px;
   ">
     <a href="https://www.ohb-ds.de/en/digital-solutions/earth-observation">
-      <img src="https://lowtideline.blob.core.windows.net/data/examples/ohb_ds_logo.jpg" alt="OHB-DS Logo"
+      <img src="https://lowtideline.blob.core.windows.net/data/ohb_ds_logo.jpg" alt="OHB-DS Logo"
         style="width: 50px; height: auto; object-fit: contain;" />
     </a>
   </div>
@@ -105,7 +105,7 @@
         <div id="attribution">
           <center>
             <strong>EO4PORTS: Low Tide Line Tracking</strong><br>
-            <img src="https://lowtideline.blob.core.windows.net/data/examples/E4PORTS_logo.png" alt="Logo EO4PORTS"
+            <img src="https://lowtideline.blob.core.windows.net/data/eo4ports/E4PORTS_logo.png" alt="Logo EO4PORTS"
               style="width: 50%; max-height: 300px; object-fit: contain;" />
           </center><br>
           EO4PORTS is a research and development project funded by the European Space Agency (ESA) with the objective to
@@ -158,7 +158,6 @@
         { position: 'topleft' } // Set position to the top-left
       ).addTo(map);
 
-      var cmap = chroma.scale('RdYlBu').domain([-3, 3])
       const prefix = "2024_Wadden_Sea"
       const suffix = "lowtideline_v5"
 
@@ -167,7 +166,7 @@
       ///////////////////////////////////////////////////////////////////////////
       // LOW TIDE LINES
       ///////////////////////////////////////////////////////////////////////////
-      const fp = "https://lowtideline.blob.core.windows.net/data/3_geojson";
+      const fp = "https://lowtideline.blob.core.windows.net/data/eo4ports/3_geojson";
       const fn = "Wadden_Sea_lowtideline_2024_v5.geojson";
       const full_path_geojson = `${fp}/${fn}`;
       console.log(full_path_geojson);
@@ -240,7 +239,7 @@
       ///////////////////////////////////////////////////////////////////////////
       // GRID CELLS
       ///////////////////////////////////////////////////////////////////////////
-      const full_path_tiles = "https://lowtideline.blob.core.windows.net/data/ROIs/Wadden_Sea_grid_sel.geojson";
+      const full_path_tiles = "https://lowtideline.blob.core.windows.net/data/eo4ports/3_geojson/Wadden_Sea_grid_sel.geojson";
       $.getJSON(full_path_tiles, function (geojson) {
         console.log(geojson)
         for (var f of geojson.features) {
@@ -284,7 +283,7 @@
             }).join("");
 
             // Extract the image URL
-            const imageUrl = `https://lowtideline.blob.core.windows.net/data/1_images/simple/${prefix}_${properties.grid_id}_${suffix}.jpg`;
+            const imageUrl = `https://lowtideline.blob.core.windows.net/data/eo4ports/1_images/simple/${prefix}_${properties.grid_id}_${suffix}.jpg`;
 
             // Create popup content
             const popupContent = `
@@ -351,6 +350,7 @@
 
       map.spin(false);
 
+      // var cmap = chroma.scale('RdYlBu').domain([-3, 3])
       // var legend = L.control({ position: 'bottomright' });
       // legend.onAdd = function (map) {
       //   var div = L.DomUtil.create('div', 'info legend');
