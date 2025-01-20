@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Viewer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    img {
+      max-width: 90%;
+      max-height: 80vh;
+      object-fit: contain;
+      border: 1px solid #ccc;
+    }
+    .buttons {
+      margin-top: 20px;
+    }
+    button {
+      background-color: rgba(0, 0, 0, 0.5);
+      color: white;
+      border: none;
+      cursor: pointer;
+      padding: 10px;
+      margin: 0 10px;
+    }
+    button:hover {
+      background-color: rgba(0, 0, 0, 0.8);
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Navigate Images</h2>
+  <img id="imageDisplay" src="" alt="Feature Image">
+  <div class="buttons">
+    <button id="prevBtn">&#8592; Previous</button>
+    <button id="nextBtn">Next &#8594;</button>
+  </div>
+
+  <script>
+    // Retrieve the featureId from the URL query parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const featureId = urlParams.get('featureId');
+    
+    if (!featureId) {
+      alert('Feature ID is missing!');
+      window.close(); // Close the tab if featureId is missing
+    }
+
+    const image_path = 'https://lowtideline.blob.core.windows.net/data/ewenetz/timeseries_img_v1';
+    const dates = ['2024-03-09-10-35-56', '2024-04-18-10-36-02', '2024-05-01-10-45-58', '2024-05-08-10-36-02', 
+      '2024-05-11-10-45-58', '2024-05-13-10-36-04', '2024-05-16-10-46-00', '2024-06-27-10-36-05', '2024-07-15-10-45-59', 
+      '2024-07-20-10-46-01', '2024-07-25-10-46-00', '2024-07-30-10-45-59', '2024-08-06-10-36-04', '2024-08-26-10-36-02', 
+      '2024-08-31-10-36-00', '2024-09-05-10-36-04', '2024-09-08-10-46-00', '2024-09-18-10-45-54', '2024-09-20-10-36-02', 
+      '2024-09-30-10-36-03', '2024-10-03-10-45-59', '2024-10-05-10-36-02', '2024-10-25-10-36-02', '2024-11-02-10-45-57', 
+      '2024-11-29-10-36-00'];
+    
+    let currentIndex = 0;
+
+    // Function to get the image URL based on the featureId and the date
+    const getImageUrl = (id, date) => `${image_path}/${id}/${date}.jpg`;
+
+    // Update image based on current index
+    const updateImage = () => {
+      const imageUrl = getImageUrl(featureId, dates[currentIndex]);
+      document.getElementById('imageDisplay').src = imageUrl;
+    };
+
+    // Set the initial image
+    updateImage();
+
+    // Add event listeners to navigate through the images
+    document.getElementById('prevBtn').addEventListener('click', () => {
+      currentIndex = (currentIndex > 0) ? currentIndex - 1 : dates.length - 1;
+      updateImage();
+    });
+
+    document.getElementById('nextBtn').addEventListener('click', () => {
+      currentIndex = (currentIndex < dates.length - 1) ? currentIndex + 1 : 0;
+      updateImage();
+    });
+  </script>
+</body>
+</html>

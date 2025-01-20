@@ -1,7 +1,7 @@
 <html>
 
 <head>
-  <title>OHB-DS Low Tide Line</title>
+  <title>OHB-DS Demo EWE NETZ</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta charset="UTF-8">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -104,32 +104,33 @@
       <div class="leaflet-sidebar-pane" id="home">
         <div id="attribution">
           <center>
-            <strong>EO4PORTS2: Low Tide Line Tracking</strong><br>
-            <img src="https://lowtideline.blob.core.windows.net/data/examples/E4PORTS_logo.png" alt="Logo EO4PORTS"
+            <p style="font-size: 18px;"><strong>EWE NETZ Demo<br>
+                Anomaly detection along pipeline network</strong></p>
+            <img src="https://lowtideline.blob.core.windows.net/data/ewenetz/ewenetz_logo.png" alt="Logo EWE NETZ"
               style="width: 50%; max-height: 300px; object-fit: contain;" />
           </center><br>
-          EO4PORTS is a research and development project funded by the European Space Agency (ESA) with the objective to
-          employ Earth Observation
-          data to provide useful insights for port operators in Europe.<br><br>
-          This app displays the <strong>latest low tide line</strong>, obtained from a combination of <strong>Landsat and
-          Sentinel-2</strong> optical images. This line delineates the low-tide bathymetry and highlights the
-          presence of transient features like sand banks, shoals and channels that may hinder
-          <strong>navigability</strong>. This product provides a recent snapshot of the state of the intertidal zone and
-          can inform <strong>port operators and dredging companies</strong> of potential obstacles that may delay operations.
+          This demo shows how satellite imagery can be used to <strong>detect anomalies along a pipeline
+            network</strong> in Northern Germany.<br><br>
+          This application automatically analyses the paddocks (agricultural fields) that intersect with a gas pipeline
+          and identifies anomalous behaviour on those paddocks.
+          <strong>The user can click on a paddock to visualise the imagery and the time-series.</strong><br><br>
+          The NDVI (Normalized Difference Vegetation Index) and BSI (Bare Soil Index) are used to identify abnormal
+          patterns in Sentinel-2 imagery by calculating a measure of heterogeneity within each paddock.<br><br>
+          The anomalies are reported to the users for further investigation every time a new image is captured (best case every 5 days).
         </div>
       </div>
       <!-- Info tab -->
       <div class="leaflet-sidebar-pane" id="info">
-        <div id="attribution"><strong>EO4PORTS: Low Tide Line tracking</strong><br>
-          Describe the methodology developed to extract the low tide line.
+        <div id="attribution"><strong>EWE NETZ Demo: methodology</strong><br>
+          Describe the methodology.
         </div>
       </div>
     </div>
     <script>
 
       var map = L.map('map', {
-        center: [53.599472, 6.877775],
-        zoom: 7,
+        center: [53.44247, 9.31675],
+        zoom: 14,
         //worldCopyJump: true
       })
 
@@ -145,10 +146,10 @@
         "Google Hybrid": L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
           maxZoom: 20,
           subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
-        }),
+        }).addTo(map),
         "CartoDB Positron": L.tileLayer.provider('CartoDB.Positron'),
         // "CartoDB Dark Matter": L.tileLayer.provider("CartoDB.DarkMatter"),
-        "ESRI WorldImagery": L.tileLayer.provider("Esri.WorldImagery").addTo(map),
+        "ESRI WorldImagery": L.tileLayer.provider("Esri.WorldImagery"),
       }
 
       // Create a layer control and place it in the upper-left corner
@@ -159,16 +160,14 @@
       ).addTo(map);
 
       var cmap = chroma.scale('RdYlBu').domain([-3, 3])
-      const prefix = "2024_Wadden_Sea"
-      const suffix = "lowtideline_v5"
 
       map.spin(true);
 
       ///////////////////////////////////////////////////////////////////////////
-      // LOW TIDE LINES
+      // PIPELINE
       ///////////////////////////////////////////////////////////////////////////
-      const fp = "https://lowtideline.blob.core.windows.net/data/3_geojson";
-      const fn = "Wadden_Sea_lowtideline_2024_v5.geojson";
+      const fp = "https://lowtideline.blob.core.windows.net/data/ewenetz";
+      const fn = "fictious_pipeline.geojson";
       const full_path_geojson = `${fp}/${fn}`;
       console.log(full_path_geojson);
       $.getJSON(full_path_geojson, function (geojson) {
@@ -182,65 +181,37 @@
         contourLayer = L.geoJSON(geojson, {
           style: function () {
             return {
-              color: "black",  // Set line color to black
-              weight: 1.5        // Set line width (reduce it)
+              color: "white",  // Set line color to black
+              weight: 3,       // Set line width
+              dashArray: '10, 5',   // Dash pattern (10px dash, 5px gap)
+              dashOffset: '0',      // Optional: Adjust where the dashes start
             };
           },
-          // onEachFeature: function (feature, layer) {
-            // const selectedAttributes = ['tile', 'date', 'images_in_composite', 'mean_tide_level', 'springs_tide_range'];
-            // Extract attributes for the popup
-            // const properties = feature.properties || {};
-            // const attributes = Object.entries(properties)
-            //   .filter(([key]) => selectedAttributes.includes(key))
-            //   .map(([key, value]) => `<strong>${key}:</strong> ${value}`)
-            //   .join("<br>");
-            // Extract the image URL (assumed to be in an "image_url" property)
-            // const imageUrl = `./data/Wadden_Sea/2_tides/${properties.tile}_tide_timeseries_v5.jpg`;
-            // Create popup content
-            // let popupContent = `<div>${attributes}</div>`;
-            // if (imageUrl) {
-            //     popupContent += `<div style="margin-top: 10px;">
-            //         <img src="${imageUrl}" alt="Feature Image" style="width: 100%; max-height: 700px; object-fit: contain;" />
-            //     </div>`;
-            // }
-
-            // Bind the popup to the layer
-            // layer.bindPopup(popupContent, {
-            //   maxWidth: 500, // Set maximum width
-            //   minWidth: 300  // Set minimum width
-            // });
-
-            // Highlight the line on mouseover
-            // layer.on('mouseover', function () {
-            //   layer.setStyle({
-            //     color: "yellow",   // Highlight color
-            //     weight: 3       // Highlight width
-            //   });
-            // });
-
-            // Reset the line style on mouseout
-            // layer.on('mouseout', function () {
-            //   layer.setStyle({
-            //     color: "black", // Default color
-            //     weight: 1       // Default width
-            //   });
-            // });
-
-            // Open popup on click
-            // layer.on('click', function () {
-            //   layer.openPopup();
-            // });
-          // }
         });
         contourLayer.addTo(map);
         // Add the GeoJSON layer to the map and layer control
-        layerControl.addOverlay(contourLayer, "Low Tide contours");
+        layerControl.addOverlay(contourLayer, "Gas pipeline");
       });
 
       ///////////////////////////////////////////////////////////////////////////
-      // GRID CELLS
+      // FIELD BOUNDARIES
       ///////////////////////////////////////////////////////////////////////////
-      const full_path_tiles = "https://lowtideline.blob.core.windows.net/data/ROIs/Wadden_Sea_grid_sel.geojson";
+      function getColor(value) {
+        return value == "True" ? 'red' : 'green'; // Example: red for value > 15, blue otherwise
+      }
+      function style(feature) {
+        return {
+          fillColor: getColor(feature.properties.flagged),
+          weight: 2,
+          opacity: 1,
+          color: 'black', // Outline color
+          fillOpacity: 0.5
+        };
+      }
+      const image_path = 'https://lowtideline.blob.core.windows.net/data/ewenetz/timeseries_img_v1'
+      const suffix = "timeseries"
+
+      const full_path_tiles = "https://lowtideline.blob.core.windows.net/data/ewenetz/fields_NBS.geojson";
       $.getJSON(full_path_tiles, function (geojson) {
         console.log(geojson)
         for (var f of geojson.features) {
@@ -250,33 +221,11 @@
         }
         // Add the GeoJSON to the map with black styling
         gridLayer = L.geoJSON(geojson, {
-          style: function () {
-            return {
-              color: "black",  // Set line color to black
-              weight: 1,     // Set line width
-            };
-          },
+          style: style,
           onEachFeature: function (feature, layer) {
-            const selectedAttributes = ['grid_id', 'date_start', 'date_end',
-              'images_in_composite', 'tidal_range_springs', 'obs_tide_level'];
+            const selectedAttributes = ['id', 'flagged'];
             // Extract attributes for the popup
             const properties = feature.properties || {};
-            // Format the 'date' field to Month and Year
-            if (properties.date_start) {
-              const date = new Date(properties.date_start);
-              properties.date_start = date.toLocaleString('default', { month: 'long', year: 'numeric' }); // e.g., "January 2023"
-            }
-            if (properties.date_end) {
-              const date = new Date(properties.date_end);
-              properties.date_end = date.toLocaleString('default', { month: 'long', year: 'numeric' }); // e.g., "January 2023"
-            }
-            // Format the tide level with the units
-            if (properties.tidal_range_springs) {
-              properties.tidal_range_springs += " m" 
-            }
-            if (properties.obs_tide_level) {
-              properties.obs_tide_level += " m" 
-            }
             // Create table with attributes
             const attributesTable = selectedAttributes.map((key) => {
               const value = properties[key] || "N/A";
@@ -284,40 +233,44 @@
             }).join("");
 
             // Extract the image URL
-            const imageUrl = `https://lowtideline.blob.core.windows.net/data/1_images/simple/${prefix}_${properties.grid_id}_${suffix}.jpg`;
+            let currentIndex = 0;
+            const dates = ['2024-03-09-10-35-56', '2024-04-18-10-36-02', '2024-05-01-10-45-58', '2024-05-08-10-36-02', '2024-05-11-10-45-58', '2024-05-13-10-36-04', '2024-05-16-10-46-00', '2024-06-27-10-36-05', '2024-07-15-10-45-59', '2024-07-20-10-46-01', '2024-07-25-10-46-00', '2024-07-30-10-45-59', '2024-08-06-10-36-04', '2024-08-26-10-36-02', '2024-08-31-10-36-00', '2024-09-05-10-36-04', '2024-09-08-10-46-00', '2024-09-18-10-45-54', '2024-09-20-10-36-02', '2024-09-30-10-36-03', '2024-10-03-10-45-59', '2024-10-05-10-36-02', '2024-10-25-10-36-02', '2024-11-02-10-45-57', '2024-11-29-10-36-00'];
+            const getImageUrl = (id, date) => `${image_path}/${properties.id}/${date}.jpg`;
 
-            // Create popup content
-            const popupContent = `
-              <div style="display: flex; flex-direction: row; gap: 10px; align-items: flex-start; max-width: 900px;">
-                <div style="flex: 1; min-width: 300px;">
-                  <img src="${imageUrl}" alt="Feature Image" style="width: 100%; max-height: 600px; object-fit: contain; border: 1px solid #ccc;" />
-                </div>
-                <div style="flex: 1; min-width: 200px; max-width: 300px;">
-                  <table style="width: 100%; border-collapse: collapse; border: 1px solid #ccc; font-size: 12px;">
-                    <thead>
-                      <tr style="background-color: #f8f8f8; font-size: 10px;">
-                        <th style="text-align: left; padding: 6px; border-bottom: 1px solid #ddd;">Attribute</th>
-                        <th style="text-align: left; padding: 6px; border-bottom: 1px solid #ddd;">Value</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      ${attributesTable}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            `;
+            // // Create popup content with buttons for navigation
+            // const updatePopupContent = (properties) => `
+            //   <div style="flex: 1; min-width: 300px; position: relative;">
+            //     <img src="${getImageUrl(properties.id, dates[currentIndex])}" alt="Feature Image"
+            //       style="width: 100%; max-height: 600px; object-fit: contain; border: 1px solid #ccc;" />
+            //     <button id="prev-btn" style="position: absolute; top: 50%; left: 0; transform: translateY(-50%);
+            //       background-color: rgba(0, 0, 0, 0.5); color: white; border: none; cursor: pointer; padding: 5px;">&#8592;</button>
+            //     <button id="next-btn" style="position: absolute; top: 50%; right: 0; transform: translateY(-50%);
+            //       background-color: rgba(0, 0, 0, 0.5); color: white; border: none; cursor: pointer; padding: 5px;">&#8594;</button>
+            //   </div>
+            // `;
 
-            // Bind the popup to the layer
-            layer.bindPopup(popupContent, {
-              maxWidth: 900, // Set maximum width
-              minWidth: 400, // Set minimum width
+            // // Bind the popup to the layer
+            // layer.bindPopup(updatePopupContent(properties), {
+            //   maxWidth: 1000, // Set maximum width
+            //   minWidth: 900,  // Set minimum width
+            // });
+
+
+            // Inside the onEachFeature function
+            layer.on('click', function () {
+              // Get the feature id (or any other unique identifier)
+              const featureId = feature.properties.id;
+              // Construct the URL for the new page with the feature id as a query parameter
+              const viewerUrl = `image_viewer.html?featureId=${featureId}`;
+              // Open the new page
+              window.open(viewerUrl, '_blank'); // Opens in a new tab
             });
+
 
             // Highlight the line on mouseover
             layer.on('mouseover', function () {
               layer.setStyle({
-                color: "red",   // Highlight color
+                color: "yellow",   // Highlight color
                 weight: 3       // Highlight width
               });
             });
@@ -331,13 +284,13 @@
             });
 
             // Open popup on click
-            layer.on('click', function () {
-              layer.openPopup();
-            });
+            // layer.on('click', function () {
+            //   layer.openPopup();
+            // });
           }
         });
         gridLayer.addTo(map);
-        layerControl.addOverlay(gridLayer, "Processing tiles (NDWI)");
+        layerControl.addOverlay(gridLayer, "Analysed paddocks");
       });
 
       var geoSearch = new GeoSearch.GeoSearchControl({
@@ -351,23 +304,15 @@
 
       map.spin(false);
 
-      // var legend = L.control({ position: 'bottomright' });
-      // legend.onAdd = function (map) {
-      //   var div = L.DomUtil.create('div', 'info legend');
-      //   div.innerHTML += "<h4>Trend (m / year)</h4>"
-      //   for (var i = -3; i <= 3; i++) {
-      //     var prefix = ""
-      //     if (i == -3) {
-      //       prefix = "≤ "
-      //     } else if (i == 3) {
-      //       prefix = "≥ "
-      //     }
-      //     div.innerHTML += `<i style="background:${cmap(i).css()}"></i>${prefix + i}<br>`
-      //   }
-      //   div.innerHTML += `<i style="background:black"></i>Uncertain<br>`
-      //   return div;
-      // };
-      // legend.addTo(map);
+      var legend = L.control({ position: 'bottomright' });
+      legend.onAdd = function (map) {
+        var div = L.DomUtil.create('div', 'info legend');
+        // div.innerHTML += "<h4>Anomalies</h4>"
+        div.innerHTML += `<i style="background:${getColor("False")}"></i>Normal<br><br>`
+        div.innerHTML += `<i style="background:${getColor("True")}"></i>Anomaly<br>`
+        return div;
+      };
+      legend.addTo(map);
 
     </script>
 </body>
