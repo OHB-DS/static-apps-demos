@@ -66,6 +66,10 @@
     .fa {
       line-height: inherit;
     }
+    ol {
+    list-style: none;
+    padding-left: 0;
+    }
   </style>
 </head>
 
@@ -120,7 +124,7 @@
       <div class="leaflet-sidebar-pane" id="home">
         <div id="attribution">
           <center>
-            <strong>EO4PORTS: Low Tide Line Tracking</strong><br>
+            <strong style="font-size: 16px;">EO4PORTS: Low Tide Line Tracking</strong><br>
             <img src="https://lowtideline.blob.core.windows.net/data/eo4ports/timelapse_intertidal_Bremerhaven_loop.gif" alt="Timelapse intertidal"
             style="width: 100%; max-height: 300px; object-fit: contain;" />
           </center><br>
@@ -140,8 +144,36 @@
       </div>
       <!-- Info tab -->
       <div class="leaflet-sidebar-pane" id="info">
-        <div id="attribution"><strong>EO4PORTS: Low Tide Line tracking</strong><br>
-          Describe the methodology developed to extract the low tide line.
+        <div id="attribution">
+          <strong style="font-size: 16px;">EO4PORTS: Low Tide Line tracking</strong><br>
+          The step-by-step methodology developed to extract the Low Tide line from publicly available satellite imagery is described below:
+          <ol>
+            <li><strong>Retrieve imagery of AOI</strong></li> 
+            All the available Landsat 5, 7, 8, 9 and Sentinel-2 images are retrieved from their respective collections.
+            <br><br>
+            <li><strong>Assign a tide level to each image</strong></li> 
+            The global tide model developed by CNES 
+            <a href="https://www.aviso.altimetry.fr/en/data/products/auxiliary-products/global-tide-fes/release-fes22.html" target="_blank">
+              FES2022 (Finite Element Solution)
+            </a>
+            is used to assign a tide level to every satellite image.
+            <a href="https://lowtideline.blob.core.windows.net/data/eo4ports/2_tides/Wadden_Sea_32UME_050_tide_timeseries_v5.jpg" target="_blank">
+              <img src="https://lowtideline.blob.core.windows.net/data/eo4ports/2_tides/Wadden_Sea_32UME_050_tide_timeseries_v5.jpg" alt="tides"
+              style="width: 100%; height: auto; object-fit: contain;" />
+            </a>
+            <br><br>
+            <li><strong>Compute a low-tide NDWI composite</strong></li>
+            The satellite images captured at low tide (bottom 30% of the springs tidal range) are used to compute a composite NDWI image. 
+            The 70th percentile is taken when calculating the composite to give more weight to dry pixels. 
+            <a href="https://lowtideline.blob.core.windows.net/data/eo4ports/1_images/simple/2024_Wadden_Sea_32UME_029_lowtideline_v5.jpg" target="_blank">
+              <img src="https://lowtideline.blob.core.windows.net/data/eo4ports/1_images/simple/2024_Wadden_Sea_32UME_029_lowtideline_v5.jpg" alt="tides"
+              style="width: 100%; height: auto; object-fit: contain;" />
+            </a>
+            <br><br>
+            <li><strong>Extract the sand/water contours</strong></li>
+            Use the NDWI contrast between water and wet sand to extract the low-tide line from the composite as a vector line.
+          </ol>
+          <strong>This process is repeated for each 10x10km grid cell shown on the map.</strong>
         </div>
       </div>
     </div>
