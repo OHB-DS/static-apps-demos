@@ -66,15 +66,74 @@
     .fa {
       line-height: inherit;
     }
+
     ol {
     list-style: none;
     padding-left: 0;
+    }
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content {
+      background-color: white;
+      margin: 15% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+      max-width: 300px;
+      text-align: center;
+      border-radius: 8px;
+      font-family: Arial, sans-serif;
+    }
+
+    .modal-content button {
+      background-color: #0074d9;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      margin-top: 20px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .modal-content button:hover {
+      background-color: #0074d9;
+    }
+
+    .blue-button {
+      background-color: #0074d9;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      margin-top: 20px;
+      border-radius: 5px;
+      cursor: pointer;      
     }
   </style>
 </head>
 
 <body>
   <div id="map"></div>
+
+  <!-- Popup Modal -->
+  <div id="instructionsModal" class="modal">
+    <div class="modal-content">
+      <h4>Welcome to the EO Low Tide Line</h4>
+      <p style="font-size: 12px">Click on a grid cell to visualize the imagery</p>
+      <p style="font-size: 12px">Click on &nbsp;<i class="fa fa-info"></i>&nbsp; for more info on the methodology</p>
+      <button id="closeModal">Got it!</button>
+    </div>
+  </div>
 
   <!-- OHB-DS banner -->
   <div style="
@@ -84,8 +143,7 @@
       z-index: 1000; 
       background-color: white; 
       padding: 5px; 
-      border-radius: 5px;
-  ">
+      border-radius: 5px;">
     <a href="https://www.ohb-ds.de/en/digital-solutions/earth-observation">
       <img src="https://lowtideline.blob.core.windows.net/data/ohb_ds_logo.jpg" alt="OHB-DS Logo"
         style="width: auto; height: 40px; object-fit: contain;" />
@@ -94,27 +152,27 @@
 
     <!-- EO4PORTs banner -->
     <div style="
-    position: absolute; 
-    top: 10px; 
-    left: 150px; 
-    z-index: 1000; 
-    background-color: white; 
-    padding: 5px; 
-    border-radius: 5px;
-">
-  <a href="https://earsc-portal.eu/display/EO4PO/Earth+Observation+for+Ports">
-    <img src="https://lowtideline.blob.core.windows.net/data/eo4ports/ESA_logo.png" alt="OHB-DS Logo"
-      style="width: auto; height: 40px; object-fit: contain;" />
-  </a>
-</div>
+        position: absolute; 
+        top: 10px; 
+        left: 150px; 
+        z-index: 1000; 
+        background-color: white; 
+        padding: 5px; 
+        border-radius: 5px;">
+    <a href="https://earsc-portal.eu/display/EO4PO/Earth+Observation+for+Ports">
+      <img src="https://lowtideline.blob.core.windows.net/data/eo4ports/ESA_logo.png" alt="OHB-DS Logo"
+        style="width: auto; height: 40px; object-fit: contain;" />
+    </a>
+  </div>
 
   <div id="sidebar" class="leaflet-sidebar collapsed">
+
     <!-- Nav tabs -->
     <div class="leaflet-sidebar-tabs">
       <ul role="tablist"> <!-- top aligned tabs -->
         <li><a href="#home" role="tab"><i class="fa fa-bars"></i></a></li>
         <li><a href="#info" role="tab"><i class="fa fa-info"></i></a></li>
-        <li><a href="https://www.ohb-ds.de/en/digital-solutions/earth-observation"><i class="fa fa-globe"></i></a></li>
+        <!-- <li><a href="https://www.ohb-ds.de/en/digital-solutions/earth-observation"><i class="fa fa-globe"></i></a></li> -->
       </ul>
     </div>
 
@@ -162,28 +220,55 @@
             </a>
             <br><br>
             <li><strong>Compute a low-tide NDWI composite</strong></li>
-            The satellite images captured at low tide (bottom 30% of the springs tidal range) are used to compute a composite NDWI image. 
+            The satellite images captured at low tide (bottom 30% of the springs tidal range) are used to compute a composite NDWI (Normalized Difference Water Index) image. 
             The 70th percentile is taken when calculating the composite to give more weight to dry pixels. 
-            <a href="https://lowtideline.blob.core.windows.net/data/eo4ports/1_images/simple/2024_Wadden_Sea_32UME_029_lowtideline_v5.jpg" target="_blank">
-              <img src="https://lowtideline.blob.core.windows.net/data/eo4ports/1_images/simple/2024_Wadden_Sea_32UME_029_lowtideline_v5.jpg" alt="tides"
-              style="width: 100%; height: auto; object-fit: contain;" />
-            </a>
             <br><br>
             <li><strong>Extract the sand/water contours</strong></li>
             Use the NDWI contrast between water and wet sand to extract the low-tide line from the composite as a vector line.
           </ol>
+          <a href="https://lowtideline.blob.core.windows.net/data/eo4ports/doc/2024_Wadden_Sea_32UME_048_lowtideline_v5.jpg" target="_blank">
+            <img src="https://lowtideline.blob.core.windows.net/data/eo4ports/doc/2024_Wadden_Sea_32UME_048_lowtideline_v5.jpg" alt="tides"
+            style="width: 100%; height: auto; object-fit: contain;" />
+          </a>
           <strong>This process is repeated for each 10x10km grid cell shown on the map.</strong>
         </div>
       </div>
     </div>
     <script>
 
+      // Display modal on load
+      window.onload = function () {
+        var modal = document.getElementById("instructionsModal");
+        var closeModalButton = document.getElementById("closeModal");
+
+        modal.style.display = "block";
+
+        closeModalButton.onclick = function () {
+          modal.style.display = "none";
+        };
+
+        window.onclick = function (event) {
+          if (event.target == modal) {
+            modal.style.display = "none";
+          }
+        };
+      };
+
+    // Function to handle blue button clicks
+    function onBlueButtonClick(grid_id) {
+      console.log(grid_id);
+      const targetUrl = `image_viewer_eo4ports.html?id=${grid_id}`;
+      window.location.href = targetUrl;
+    }
+
+      // Display map
       var map = L.map('map', {
         center: [53.599472, 7.877775],
         zoom: 7,
         //worldCopyJump: true
       })
 
+      // Display sidebar
       var sidebar = L.control.sidebar({
         autopan: false,       // whether to maintain the centered map point when opening the sidebar
         closeButton: true,    // whether t add a close button to the panes
@@ -191,6 +276,7 @@
         position: 'right',     // left or right
       }).addTo(map).open("home")
 
+      // Select basemaps
       var baseMaps = {
         "OSM": L.tileLayer.provider("OpenStreetMap.Mapnik"),
         "Google Hybrid": L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
@@ -209,6 +295,7 @@
         { position: 'topleft' } // Set position to the top-left
       ).addTo(map);
 
+      // filepath to data
       const prefix = "2024_Wadden_Sea"
       const suffix = "lowtideline_v5"
 
@@ -220,9 +307,8 @@
       const fp = "https://lowtideline.blob.core.windows.net/data/eo4ports/3_geojson";
       const fn = "Wadden_Sea_lowtideline_2024_v5.geojson";
       const full_path_geojson = `${fp}/${fn}`;
-      console.log(full_path_geojson);
       $.getJSON(full_path_geojson, function (geojson) {
-        console.log(geojson)
+        // console.log(geojson)
         for (var f of geojson.features) {
           for (var c of f.geometry.coordinates) {
             if (c[0] < 0) c[0] += 360
@@ -284,7 +370,7 @@
         });
         contourLayer.addTo(map);
         // Add the GeoJSON layer to the map and layer control
-        layerControl.addOverlay(contourLayer, "Low Tide contours");
+        layerControl.addOverlay(contourLayer, "Low Tide Line");
       });
 
       ///////////////////////////////////////////////////////////////////////////
@@ -292,7 +378,7 @@
       ///////////////////////////////////////////////////////////////////////////
       const full_path_tiles = "https://lowtideline.blob.core.windows.net/data/eo4ports/3_geojson/Wadden_Sea_grid_sel.geojson";
       $.getJSON(full_path_tiles, function (geojson) {
-        console.log(geojson)
+        // console.log(geojson)
         for (var f of geojson.features) {
           for (var c of f.geometry.coordinates) {
             if (c[0] < 0) c[0] += 360
@@ -345,12 +431,12 @@
                 <div style="flex: 1; min-width: 200px; max-width: 300px;">
                   <table style="width: 100%; border-collapse: collapse; border: 1px solid #ccc; font-size: 12px;">
                     <thead>
-                      <tr style="background-color: #f8f8f8; font-size: 10px;">
+                      <tr style="background-color: #f8f8f8; font-size: 12px;">
                         <th style="text-align: left; padding: 6px; border-bottom: 1px solid #ddd;">Attribute</th>
                         <th style="text-align: left; padding: 6px; border-bottom: 1px solid #ddd;">Value</th>
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody style="font-size: 12px;">
                       ${attributesTable}
                     </tbody>
                   </table>
@@ -387,9 +473,10 @@
           }
         });
         gridLayer.addTo(map);
-        layerControl.addOverlay(gridLayer, "Processing tiles (NDWI)");
+        layerControl.addOverlay(gridLayer, "Grid cells");
       });
 
+      // Geosearch bar
       var geoSearch = new GeoSearch.GeoSearchControl({
         provider: new GeoSearch.OpenStreetMapProvider(),
         style: 'button',
