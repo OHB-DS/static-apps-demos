@@ -66,14 +66,43 @@
     .fa {
       line-height: inherit;
     }
+    .navigation-buttons {
+      position: absolute;
+      top: 12px;
+      left: 80px;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .navigation-buttons button {
+      background-color: #ffffff;
+      color: rgb(0, 0, 0);
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .navigation-buttons button:hover {
+      background-color: #cecece;
+    }
   </style>
 </head>
 
 <body>
   <div id="map"></div>
 
+  <!-- Navigation Buttons -->
+  <div class="navigation-buttons">
+    <button onclick="moveToArea(53.44247, 9.31675)">Go to NSB Area</button>
+    <button onclick="moveToArea(53.567325, 7.941926)">Go to NOV Area</button>
+  </div>
+
   <!-- OHB-DS banner -->
-  <div style="
+  <!-- <div style="
       position: absolute; 
       top: 10px; 
       left: 60px; 
@@ -86,7 +115,7 @@
       <img src="https://lowtideline.blob.core.windows.net/data/ohb_ds_logo.jpg" alt="OHB-DS Logo"
         style="width: 50px; height: auto; object-fit: contain;" />
     </a>
-  </div>
+  </div> -->
 
   <div id="sidebar" class="leaflet-sidebar collapsed">
     <!-- Nav tabs -->
@@ -106,8 +135,10 @@
           <center>
             <p style="font-size: 18px;"><strong>DEMONSTRATION<br>
                 Anomaly detection along pipeline network</strong></p>
-            <img src="https://lowtideline.blob.core.windows.net/data/ohb_ds_logo.jpg" alt="Logo EWE NETZ"
-              style="width: 50%; max-height: 300px; object-fit: contain;" />
+                <a href="https://www.ohb-ds.de/en/digital-solutions/earth-observation">
+                  <img src="https://lowtideline.blob.core.windows.net/data/ohb_ds_logo.jpg" alt="Logo EWE NETZ"
+                       style="width: 50%; max-height: 300px; object-fit: contain;" />
+                </a>
           </center><br>
           This demo shows how satellite imagery can be used to <strong>detect anomalies along a pipeline network</strong> in Northern Germany.<br><br>
           This application automatically analyses the paddocks (agricultural fields) that intersect with a gas pipeline
@@ -120,9 +151,11 @@
       </div>
       <!-- Info tab -->
       <div class="leaflet-sidebar-pane" id="info">
-        <div id="attribution" style="font-size: 18px;"><strong>Additional information</strong>
+        <div id="attribution" style="font-size: 16px;"><strong style="font-size: 18px;">Additional information</strong>
           <br><br>
-          Links to super-resolution imagery:
+          <strong>Links to super-resolution imagery (S2DR3)</strong>
+          <br><br>
+          NSB Area:
           <ul>
             <li>
               <a href="https://storage.googleapis.com/sentinel-s2dr3/s2dr3demo15.html?ds=DE-T32UNE-20240826-ub666b35#16.35/53.438261/9.306977"
@@ -160,7 +193,23 @@
                 5th October 2024
               </a>
             </li>  
-          </ul> 
+          </ul>
+          <br> 
+          NOV Area:
+          <ul>
+            <li>
+              <a href="https://storage.googleapis.com/sentinel-s2dr3/s2dr3demo15.html?ds=DE-T32UME-20240501-ud33edee#15.49/53.570512/7.929971"
+                 target="_blank"> 
+                1st May 2024
+              </a>
+            </li>
+            <li>
+              <a href="https://storage.googleapis.com/sentinel-s2dr3/s2dr3demo15.html?ds=DE-T32UME-20240720-ud33edee#15.13/53.570413/7.930269"
+                 target="_blank"> 
+                20th July 2024
+              </a>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
@@ -249,7 +298,7 @@
       const image_path = 'https://lowtideline.blob.core.windows.net/data/ewenetz/timeseries_img_v1'
       const suffix = "timeseries"
 
-      const full_path_tiles = "https://lowtideline.blob.core.windows.net/data/ewenetz/fields_NBS.geojson";
+      const full_path_tiles = "https://lowtideline.blob.core.windows.net/data/ewenetz/fields_combined.geojson";
       $.getJSON(full_path_tiles, function (geojson) {
         console.log(geojson)
         for (var f of geojson.features) {
@@ -304,13 +353,14 @@
               window.open(viewerUrl, '_blank'); // Opens in a new tab
             });
 
-
             // Highlight the line on mouseover
             layer.on('mouseover', function () {
               layer.setStyle({
                 color: "yellow",   // Highlight color
                 weight: 3       // Highlight width
               });
+              // const attribute = feature.properties.id || "No name";
+              // layer.bindTooltip(`${attribute}`).openTooltip();
             });
 
             // Reset the line style on mouseout
@@ -351,6 +401,11 @@
         return div;
       };
       legend.addTo(map);
+
+      // Function to move to a specific area
+      function moveToArea(lat, lng) {
+        map.setView([lat, lng], 14);
+      }
 
     </script>
 </body>
