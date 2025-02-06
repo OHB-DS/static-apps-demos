@@ -5,8 +5,20 @@
         "serve": "/index.html"
       },
       {
+        "route": "/eo4ports",
+        "serve": "/eo4ports/index.html"
+      },
+      {
+        "route": "/eo4ports/image_viewer.html",
+        "serve": "/eo4ports/image_viewer.html"
+      },
+      {
         "route": "/ewenetz",
         "serve": "/ewenetz/index.html"
+      },
+      {
+        "route": "/ewenetz/image_viewer.html",
+        "serve": "/ewenetz/image_viewer.html"
       }
     ]
   }
