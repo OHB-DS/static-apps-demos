@@ -19,6 +19,10 @@
       {
         "route": "/ewenetz/image_viewer.html",
         "serve": "/ewenetz/image_viewer.html"
+      },
+      {
+        "route": "/oilspill",
+        "serve": "/oilspill/index.html"
       }
     ]
   }

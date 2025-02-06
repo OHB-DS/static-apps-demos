@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OHB-DS Oil Spill Detection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: justify;
+            margin: 20px;
+        }
+        img {
+            width: 80%;
+            max-width: 1000px;
+            margin-bottom: 20px;
+        }
+        .text {
+            font-size: 16px;
+            margin: 20px 0;
+        }
+        .caption {
+            font-size: 16px;
+            font-style: italic;
+            color: gray;
+            margin-bottom: 20px;
+        }
+        .equation {
+            font-size: 16px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <a href="https://www.ohb-ds.de/en/digital-solutions/earth-observation">
+        <img src="https://lowtideline.blob.core.windows.net/data/OHB%20Digital%20Services%20logo.png" alt="OHB-DS Logo"
+          style="width: auto; height: 80px; object-fit: contain;" />
+      </a>
+    <h2>Oil Spill Spread Detection from Sentinel-2</h1>
+    <div class="text">
+        On 7 October 2018, the ferry vessel Ulysse collided with the container ship CSL Virginia north of Cape Corsica.<br><br> 
+        The collision smashed a hole in the hull of the CSL Virginia.
+        The breached tanks released upwards of 600 tonnes of heavy fuel oil into the Mediterranean Sea, causing a 4-km long spill.<br><br> 
+        While this was captured by Sentinel-1 SAR 
+        (<a href="https://www.esa.int/ESA_Multimedia/Images/2018/10/Oil_spill_spread" target="blank">article from ESA</a>),
+        we demonstrate that the oil spill spread could also be seen from Sentinel-2 optical imagery.
+    </div>
+    <center>
+        <img src="https://lowtideline.blob.core.windows.net/data/oilspill/1_ship_collision.png" alt="Ship collision Corsica" style="width: 40%">
+        <div class="caption">Figure 1: Ship collision on a Sentinel-2 image acquired on 9th October 2018.</div>
+    </center>
+    <div class="text">
+        We first download the Sentinel-2 image covering the area of interest acquired on the 9th of October 2018.<br><br>
+        There is little contrast over the water pixels and the oil spill is barely perceptible on this RGB image.
+    </div>   
+    <center>
+        <img src="https://lowtideline.blob.core.windows.net/data/oilspill/2_rgb_image.jpg" alt="Ship collision Corsica" style="width: 100%">
+        <div class="caption">Figure 2: Oil spill spread shown on 9th October Sentinel-2 image (barely visible).</div>
+    </center>
+    <div class="text">
+        Then we can look at each individual band to see which one provides the most contrast between oil and water.<br><br>
+        In the figure below, we show the 4 bands from Sentinel-2 that come at 10m/pixel, namely the Blue, Green, Red and Near Infrared.<br><br>
+        Although there is little variation of the reflectance values over water (about 0.05 range within the image), 
+        we can see that the oil spill shows slightly higher reflectance than the surrounding pixels, especially for the Blue and Green bands. 
+    </div>    
+    <center>
+        <img src="https://lowtideline.blob.core.windows.net/data/oilspill/3_individual_bands.jpg" alt="Ship collision Corsica" style="width: 70%">
+        <div class="caption">Figure 3: Visualisation of individuals Sentinel-2 bands and their histograms.</div>
+    </center>
+    <div class="text">
+        By combining the Blue, Green and Red bands, we can compute the <a href="https://custom-scripts.sentinel-hub.com/custom-scripts/sentinel-2/oil-spill-index/" target="blank">
+        Oil Spill Index (OSI)</a>:<br>
+        <div class="equation">OSI = (Green + Red)/Blue</div>
+        In this case, the Red band seems to be affected by the swath of the sensor so we will just use the Blue band instead.
+        In the plot below, the pixels that have a value above the 95th percentile are shown in red colours.
+    </div>   
+    <center>
+        <img src="https://lowtideline.blob.core.windows.net/data/oilspill/4_blue_band.jpg" alt="Ship collision Corsica" style="width: 75%">
+        <div class="caption">Figure 4: The Blue band provides the most contrast between the oil spill pixels and the surroundings.</div>
+    </center>
+    <div class="text">
+        Next, we need to enhance the signal of the oil spill pixels. We can do this by applying image processing techniques that 
+        reduce the background noise.<br><br>
+        Here we apply a <a href="https://scikit-image.org/docs/stable/auto_examples/filters/plot_tophat.html" target="blank">white top-hat filter</a> to highlight the "brighter" features
+        on the image (i.e., oil spill pixels), and then we apply a Gaussian filter to blurr out the background noise.<br><br>
+        The resulting image is shown below.
+    </div>
+    <center>
+        <img src="https://lowtideline.blob.core.windows.net/data/oilspill/5_blue_processed.jpg" alt="Ship collision Corsica" style="width: 75%">
+        <div class="caption">Figure 5: Image after applying a White Top-hat followed by a Gaussian filter.</div>
+    </center>
+    <div class="text">
+        Finally, we can extract pixels with values above the 95th percentile to create an oil spill binary mask.<br><br>
+        That's it, the oil spill is mapped! It can now be communicated to the responsible authorities! 
+    </div>
+    <center>
+        <img src="https://lowtideline.blob.core.windows.net/data/oilspill/6_blue_processed_binary.jpg" alt="Ship collision Corsica" style="width: 100%">
+        <div class="caption">Figure 6: Detected oil spill drifting towards the NW.</div>
+    </center>
+</body>
+</html>
