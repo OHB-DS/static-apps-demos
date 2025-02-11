@@ -37,7 +37,7 @@
 </head>
 <body>
 
-  <h2>Navigate Images</h2>
+  <h3>Visualise changes in low tide contours</h3>
   <img id="imageDisplay" src="" alt="Feature Image">
   <div class="buttons">
     <button id="prevBtn">&#8592; Previous</button>
@@ -54,14 +54,14 @@
       window.close(); // Close the tab if featureId is missing
     }
 
-    const image_path = 'https://lowtideline.blob.core.windows.net/data/eo4ports/1_images/simple';
+    const image_path = 'https://lowtideline.blob.core.windows.net/data/eo4ports/1_images/archive';
     const dates = ['2024','2023','2022','2021','2020'];
     const prefix = "Wadden_Sea"
     const suffix = "lowtideline_v5"
     let currentIndex = 0;
 
     // Function to get the image URL based on the featureId and the date
-    const getImageUrl = (id, date) => `${image_path}/${date}_${prefix}_${id}_${suffix}.jpg`;
+    const getImageUrl = (id, date) => `${image_path}/${date}/simple/${date}_${prefix}_${id}_${suffix}.jpg`;
 
     // Update image based on current index
     const updateImage = () => {
@@ -73,12 +73,12 @@
     updateImage();
 
     // Add event listeners to navigate through the images
-    document.getElementById('prevBtn').addEventListener('click', () => {
+    document.getElementById('nextBtn').addEventListener('click', () => {
       currentIndex = (currentIndex > 0) ? currentIndex - 1 : dates.length - 1;
       updateImage();
     });
 
-    document.getElementById('nextBtn').addEventListener('click', () => {
+    document.getElementById('prevBtn').addEventListener('click', () => {
       currentIndex = (currentIndex < dates.length - 1) ? currentIndex + 1 : 0;
       updateImage();
     });

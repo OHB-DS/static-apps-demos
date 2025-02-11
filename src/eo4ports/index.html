@@ -129,8 +129,9 @@
   <div id="instructionsModal" class="modal">
     <div class="modal-content">
       <h4>Welcome to the EO Low Tide Line</h4>
-      <p style="font-size: 12px">Click on a grid cell to visualize the imagery</p>
-      <p style="font-size: 12px">Click on &nbsp;<i class="fa fa-info"></i>&nbsp; for more info on the methodology</p>
+      <p style="font-size: 14px">Click on a grid cell to visualize the imagery</p>
+      <p style="font-size: 14px">Then click on "Explore past changes" to see changes over time</p>
+      <p style="font-size: 14px">Click on &nbsp;<i class="fa fa-info"></i>&nbsp; for more info on the methodology</p>
       <button id="closeModal">Got it!</button>
     </div>
   </div>
@@ -257,8 +258,8 @@
     // Function to handle blue button clicks
     function onBlueButtonClick(grid_id) {
       console.log(grid_id);
-      const targetUrl = `image_viewer.html?id=${grid_id}`;
-      window.location.href = targetUrl;
+      const viewerUrl = `image_viewer.html?id=${grid_id}`;
+      window.open(viewerUrl, '_blank'); 
     }
 
       // Display map
