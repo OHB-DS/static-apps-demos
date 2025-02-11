@@ -125,10 +125,14 @@
 <body>
   <div id="map"></div>
 
-  <!-- Popup Modal -->
+  <!-- Instructions Popup -->
   <div id="instructionsModal" class="modal">
     <div class="modal-content">
       <h4>Welcome to the EO Low Tide Line</h4>
+      <p style="font-size: 14px">
+        Hover on <img src="https://lowtideline.blob.core.windows.net/data/eo4ports/layer-group-solid.svg" style="width: 20px;  object-fit: contain;"></img>
+        to switch Low Tide Lines (from 2020 to 2024)
+      </p>
       <p style="font-size: 14px">Click on a grid cell to visualize the imagery</p>
       <p style="font-size: 14px">Then click on "Explore past changes" to see changes over time</p>
       <p style="font-size: 14px">Click on &nbsp;<i class="fa fa-info"></i>&nbsp; for more info on the methodology</p>
@@ -237,7 +241,7 @@
     </div>
     <script>
 
-      // Display modal on load
+      // Display instructions popup on load
       window.onload = function () {
         var modal = document.getElementById("instructionsModal");
         var closeModalButton = document.getElementById("closeModal");
@@ -255,12 +259,12 @@
         };
       };
 
-    // Function to handle blue button clicks
-    function onBlueButtonClick(grid_id) {
-      console.log(grid_id);
-      const viewerUrl = `image_viewer.html?id=${grid_id}`;
-      window.open(viewerUrl, '_blank'); 
-    }
+      // Function to handle blue button clicks (forwards to viewer)
+      function onBlueButtonClick(grid_id) {
+        console.log(grid_id);
+        const viewerUrl = `image_viewer.html?id=${grid_id}`;
+        window.open(viewerUrl, '_blank'); 
+      }
 
       // Display map
       var map = L.map('map', {
@@ -284,7 +288,7 @@
           maxZoom: 20,
           subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
         }),
-        "CartoDB Positron": L.tileLayer.provider('CartoDB.Positron'),
+        // "CartoDB Positron": L.tileLayer.provider('CartoDB.Positron'),
         // "CartoDB Dark Matter": L.tileLayer.provider("CartoDB.DarkMatter"),
         "ESRI WorldImagery": L.tileLayer.provider("Esri.WorldImagery").addTo(map),
       }
@@ -300,79 +304,52 @@
       const prefix = "2024_Wadden_Sea"
       const suffix = "lowtideline_v5"
 
+      // spin while data loads
       map.spin(true);
 
       ///////////////////////////////////////////////////////////////////////////
       // LOW TIDE LINES
       ///////////////////////////////////////////////////////////////////////////
       const fp = "https://lowtideline.blob.core.windows.net/data/eo4ports/3_geojson";
-      const fn = "Wadden_Sea_lowtideline_2024_v5.geojson";
-      const full_path_geojson = `${fp}/${fn}`;
-      $.getJSON(full_path_geojson, function (geojson) {
-        // console.log(geojson)
-        for (var f of geojson.features) {
-          for (var c of f.geometry.coordinates) {
-            if (c[0] < 0) c[0] += 360
-          }
+      const years = [2020, 2021, 2022, 2023, 2024];
+      const colours = ["#d7191c", "#fdae61", "#abdda4", "#316d92", "black"]
+      async function addLayersInOrder() {
+          for (let i = years.length - 1; i >= 0; i--) {
+              console.log(`Year: ${years[i]}`);
+              const fn = `${years[i]}_Wadden_Sea_${suffix}.geojson`;
+              const full_path_geojson = `${fp}/${fn}`;
+              // Load json
+              const response = await fetch(full_path_geojson);
+              if (!response.ok) {
+                console.error(`Failed to load ${full_path_geojson}`);
+                continue;
+              }
+              const geojson = await response.json();
+              // adjust coordinates
+              for (var f of geojson.features) {
+                for (var c of f.geometry.coordinates) {
+                  if (c[0] < 0) c[0] += 360
+                }
+              }
+              // Add the GeoJSON to the map with black styling
+              contourLayer = L.geoJSON(geojson, {
+                style: function () {
+                  return {
+                    color: colours[i],  // Set line color to black
+                    weight: 1.5        // Set line width (reduce it)
+                  };
+                },
+              });
+              if (years[i] == 2024) {
+                contourLayer.addTo(map);
+              }
+              // Add the GeoJSON layer to the map and layer control
+              layerControl.addOverlay(contourLayer, `${years[i]} Low Tide Line`);
+            }
         }
-        // Add the GeoJSON to the map with black styling
-        contourLayer = L.geoJSON(geojson, {
-          style: function () {
-            return {
-              color: "black",  // Set line color to black
-              weight: 1.5        // Set line width (reduce it)
-            };
-          },
-          // onEachFeature: function (feature, layer) {
-            // const selectedAttributes = ['tile', 'date', 'images_in_composite', 'mean_tide_level', 'springs_tide_range'];
-            // Extract attributes for the popup
-            // const properties = feature.properties || {};
-            // const attributes = Object.entries(properties)
-            //   .filter(([key]) => selectedAttributes.includes(key))
-            //   .map(([key, value]) => `<strong>${key}:</strong> ${value}`)
-            //   .join("<br>");
-            // Extract the image URL (assumed to be in an "image_url" property)
-            // const imageUrl = `./data/Wadden_Sea/2_tides/${properties.tile}_tide_timeseries_v5.jpg`;
-            // Create popup content
-            // let popupContent = `<div>${attributes}</div>`;
-            // if (imageUrl) {
-            //     popupContent += `<div style="margin-top: 10px;">
-            //         <img src="${imageUrl}" alt="Feature Image" style="width: 100%; max-height: 700px; object-fit: contain;" />
-            //     </div>`;
-            // }
+        addLayersInOrder();
 
-            // Bind the popup to the layer
-            // layer.bindPopup(popupContent, {
-            //   maxWidth: 500, // Set maximum width
-            //   minWidth: 300  // Set minimum width
-            // });
 
-            // Highlight the line on mouseover
-            // layer.on('mouseover', function () {
-            //   layer.setStyle({
-            //     color: "yellow",   // Highlight color
-            //     weight: 3       // Highlight width
-            //   });
-            // });
-
-            // Reset the line style on mouseout
-            // layer.on('mouseout', function () {
-            //   layer.setStyle({
-            //     color: "black", // Default color
-            //     weight: 1       // Default width
-            //   });
-            // });
-
-            // Open popup on click
-            // layer.on('click', function () {
-            //   layer.openPopup();
-            // });
-          // }
-        });
-        contourLayer.addTo(map);
-        // Add the GeoJSON layer to the map and layer control
-        layerControl.addOverlay(contourLayer, "Low Tide Line");
-      });
 
       ///////////////////////////////////////////////////////////////////////////
       // GRID CELLS
