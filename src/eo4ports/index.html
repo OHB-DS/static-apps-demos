@@ -386,10 +386,10 @@
             }
             // Format the tide level with the units
             if (properties.tidal_range_springs) {
-              properties.tidal_range_springs += " m" 
+              properties.tidal_range_springs = properties.tidal_range_springs.toFixed(2) + " m" 
             }
             if (properties.obs_tide_level) {
-              properties.obs_tide_level += " m" 
+              properties.obs_tide_level = properties.obs_tide_level.toFixed(2) + " m" 
             }
             // Create table with attributes
             const attributesTable = selectedAttributes.map((key) => {
