@@ -23,6 +23,10 @@
       {
         "route": "/oilspill",
         "serve": "/oilspill/index.html"
+      },
+      {
+        "route": "/oilspill/map.html",
+        "serve": "/oilspill/map.html"
       }
     ]
   }
