@@ -36,7 +36,6 @@
       margin: 0;
       padding: 0;
     }
-
     .legend {
       color: white;
       padding: 10px;
@@ -44,7 +43,6 @@
       border-radius: 5px;
       max-width: 500px;
     }
-
     .legend i {
       width: 18px;
       height: 18px;
@@ -53,20 +51,16 @@
       opacity: 0.7;
       clear: left;
     }
-
     .legend h4 {
       margin-top: 0px;
     }
-
     .link {
       text-decoration: underline;
       cursor: pointer;
     }
-
     .fa {
       line-height: inherit;
     }
-
     ol {
     list-style: none;
     padding-left: 0;
@@ -128,14 +122,15 @@
   <!-- Instructions Popup -->
   <div id="instructionsModal" class="modal">
     <div class="modal-content">
-      <h4>Welcome to the EO Low Tide Line</h4>
+      <h4>Welcome to the EO Low Tide Line!</h4>
       <p style="font-size: 14px">
         Hover on <img src="https://lowtideline.blob.core.windows.net/data/eo4ports/layer-group-solid.svg" style="width: 20px;  object-fit: contain;"></img>
-        to switch Low Tide Lines (from 2020 to 2024)
+        to display annual Low Tide Lines (from 2020 to 2024)
       </p>
       <p style="font-size: 14px">Click on a grid cell to visualize the imagery</p>
       <p style="font-size: 14px">Then click on "Explore past changes" to see changes over time</p>
-      <p style="font-size: 14px">Click on &nbsp;<i class="fa fa-info"></i>&nbsp; for more info on the methodology</p>
+      <p style="font-size: 14px">Click on the &nbsp;<i class="fa fa-info"></i>&nbsp; tab for more info on the methods</p>
+      <p style="font-size: 14px">Click on the &nbsp;<i class="fa fa-download"></i>&nbsp; tab to download the vector files</p>
       <button id="closeModal">Got it!</button>
     </div>
   </div>
@@ -155,7 +150,7 @@
     </a>
   </div>
 
-    <!-- EO4PORTs banner -->
+    <!-- EO4PORTS/ESA banner -->
     <div style="
         position: absolute; 
         top: 10px; 
@@ -177,6 +172,7 @@
       <ul role="tablist"> <!-- top aligned tabs -->
         <li><a href="#home" role="tab"><i class="fa fa-bars"></i></a></li>
         <li><a href="#info" role="tab"><i class="fa fa-info"></i></a></li>
+        <li><a href="#download" role="tab"><i class="fa fa-download"></i></a></li>
         <!-- <li><a href="https://www.ohb-ds.de/en/digital-solutions/earth-observation"><i class="fa fa-globe"></i></a></li> -->
       </ul>
     </div>
@@ -238,6 +234,22 @@
           <strong>This process is repeated for each 10x10km grid cell shown on the map.</strong>
         </div>
       </div>
+      <!-- Downloads tab -->
+      <div class="leaflet-sidebar-pane" id="download">
+        <div id="attribution">
+          <strong style="font-size: 16px;">EO4PORTS: Low Tide Line tracking</strong><br>
+          <p>Download the annual Low Tide Line for the North Sea region (as GeoJSON):</p>
+          <ul>
+            <li><a href="https://lowtideline.blob.core.windows.net/data/eo4ports/3_geojson/2020_Wadden_Sea_lowtideline_v5.geojson" target="_blank"><i class="fa fa-download"></i> 2020 Low Tide Line</a></li>
+            <li><a href="https://lowtideline.blob.core.windows.net/data/eo4ports/3_geojson/2021_Wadden_Sea_lowtideline_v5.geojson" target="_blank"><i class="fa fa-download"></i> 2021 Low Tide Line</a></li>
+            <li><a href="https://lowtideline.blob.core.windows.net/data/eo4ports/3_geojson/2022_Wadden_Sea_lowtideline_v5.geojson" target="_blank"><i class="fa fa-download"></i> 2022 Low Tide Line</a></li>
+            <li><a href="https://lowtideline.blob.core.windows.net/data/eo4ports/3_geojson/2023_Wadden_Sea_lowtideline_v5.geojson" target="_blank"><i class="fa fa-download"></i> 2023 Low Tide Line</a></li>
+            <li><a href="https://lowtideline.blob.core.windows.net/data/eo4ports/3_geojson/2024_Wadden_Sea_lowtideline_v5.geojson" target="_blank"><i class="fa fa-download"></i> 2024 Low Tide Line</a></li>
+          </ul>
+        </div>
+
+      </div>
+
     </div>
     <script>
 
@@ -269,7 +281,7 @@
       // Display map
       var map = L.map('map', {
         center: [53.599472, 7.877775],
-        zoom: 7,
+        zoom: 6,
         //worldCopyJump: true
       })
 
@@ -279,7 +291,7 @@
         closeButton: true,    // whether t add a close button to the panes
         container: 'sidebar', // the DOM container or #ID of a predefined sidebar container that should be used
         position: 'right',     // left or right
-      }).addTo(map).open("home")
+      }).addTo(map)//.open("home")
 
       // Select basemaps
       var baseMaps = {
