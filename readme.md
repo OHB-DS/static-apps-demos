@@ -1,5 +1,8 @@
+# Static Apps Demos
 
-# Current url
+This repo contains a collection of static apps from the EO team for demo purposes.
+
+## Current url
 
 https://mango-wave-0f82c9e03.4.azurestaticapps.net/
 
