@@ -5,10 +5,6 @@
         "serve": "/eo4ports/index.html"
       },
       {
-        "route": "/eo4ports",
-        "serve": "/eo4ports/index.html"
-      },
-      {
         "route": "/eo4ports/image_viewer.html",
         "serve": "/eo4ports/image_viewer.html"
       },
