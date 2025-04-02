@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OHB-DS Earth Observation</title>
+    <style>
+      body {
+          font-family: Arial, sans-serif;
+          margin: 0;
+          padding: 0;
+          background-color: #f4f4f4;
+          text-align: center;
+      }
+      .container {
+          max-width: 1200px;
+          margin: auto;
+          padding: 20px;
+      }
+      .header {
+          background: #2c3e50;
+          color: white;
+          padding: 20px;
+          font-size: 24px;
+          position: relative;
+          display: flex;
+          align-items: center;
+      }
+      .logo {
+          position: absolute;
+          top: 10px;
+          left: 10px;
+          height: 60px;
+      }
+      .header-title {
+          flex: 1;
+          text-align: center;
+      }
+      .cards {
+          display: flex;
+          justify-content: space-around;
+          flex-wrap: nowrap;
+          margin-top: 10px;
+      }
+      .card {
+          background: white;
+          border-radius: 10px;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+          padding: 20px;
+          margin: 10px;
+          width: 30%;
+          text-align: left;
+          cursor: pointer;
+          text-decoration: none;
+          color: inherit;
+          display: block;
+      }
+      .card img {
+          width: 100%;
+          border-radius: 10px;
+      }
+      .card h3 {
+          color: #333;
+      }
+      .card p {
+          color: #666;
+      }
+      .footer {
+          margin-top: 20px;
+          padding: 20px;
+          background: #2c3e50;
+          color: white;
+      }
+      @media (max-width: 768px) {
+          .card {
+              width: 100%;
+          }
+      }
+  </style>
+</head>
+<body>
+    <div class="header">
+        <div style="
+        position: absolute; 
+        top: 5px; 
+        left: 20px; 
+        z-index: 1000; 
+        background-color: white; 
+        padding: 5px; 
+        border-radius: 5px;">
+        <a href="https://www.ohb-ds.de/en/digital-solutions/earth-observation">
+          <img src="https://lowtideline.blob.core.windows.net/data/OHB%20Digital%20Services%20logo.png" alt="OHB-DS Logo"
+            style="width: auto; height: 40px; object-fit: contain;" />
+        </a>
+      </div>
+      <div class="header-title">Earth Observation - Demo Projects</div>
+    </div>
+    <div class="container">
+        <div class="cards">
+          <a href="./eo4ports/index.html" target="blank" class="card">
+            <strong style="font-size: 16px;">Low Tide Line Tracking (EO4PORTS)</strong><br>
+            <img src="https://lowtideline.blob.core.windows.net/data/eo4ports/timelapse_intertidal_Bremerhaven_loop.gif" alt="Timelapse intertidal"
+            style="width: 100%; max-height: 250px; object-fit: contain;" />
+            <p>Tracking the most recent low tide line using Landsat and
+              Sentinel-2 optical images synchronized with a tidal model.</p>
+          </a>
+        <a href="./ewenetz/index.html" target="blank" class="card">
+          <strong style="font-size: 16px;">Pipeline Monitoring from Space</strong><br>
+          <img src="https://lowtideline.blob.core.windows.net/data/ewenetz/ewenetz_app.png" alt="EWENETZ app"
+          style="width: 100%; max-height: 250px; object-fit: contain;" />
+          <p>Gas pipeline monitoring from Sentinel-2 to detect anomalous activities in the vicinity of a pipeline.</p>
+        </a>
+        <a href="./oilspill/index.html" target="blank" class="card">
+          <strong style="font-size: 16px;">Oil Spill detection</strong><br>
+          <img src="https://lowtideline.blob.core.windows.net/data/oilspill/4_blue_band.jpg" alt="Oil spill app"
+          style="width: 100%; max-height: 250px; object-fit: contain;" />
+          <p>Mapping oil spills in the ocean on Sentinel-2 imagery.</p>
+        </a>
+        <a href="./hi-res-lst/index.html" target="_blank" class="card" 
+        style="display: block; text-decoration: none; color: inherit;">
+       
+       <!-- Title and Small Logo Side by Side -->
+       <div style="display: flex; align-items: center; gap: 8px;">
+           <img src="./hi-res-lst/images/hi-res-lst-logo.PNG" alt="Logo"
+                style="width: 30px; height: 30px; object-fit: contain;" />
+         <strong style="font-size: 16px;">Hi-Res-LST</strong>
+       </div>
+     
+       <!-- Main Image -->
+       <img src="./hi-res-lst/images/hi-res-downscaled-example.PNG" alt="Example Image"
+            style="width: 100%; max-height: 250px; object-fit: contain; margin-top: 8px;" />
+            
+            <!-- Description -->
+            <p>The service leverages Earth observation (EO) technologies and
+                advanced Machine Learning (ML) techniques to provide high-resolution
+                thermal monitoring data, supporting the platform's objectives of
+                enhanced environmental modeling and data analysis.</p>
+                <img src="./hi-res-lst/images/hi-res-downscaled-lst-xcube-example.png" alt="Example Image"
+                        style="width: 100%; max-height: 250px; object-fit: contain; margin-top: 8px;" />
+            </a>    
+    </div>
+    <div class="footer">&copy; 2024 OHB Digital Services</div>
+</body>
+</html>

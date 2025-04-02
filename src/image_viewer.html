@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Viewer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    img {
+      max-width: 90%;
+      max-height: 80vh;
+      object-fit: contain;
+      border: 1px solid #ccc;
+    }
+    .buttons {
+      margin-top: 20px;
+    }
+    button {
+      background-color: rgba(0, 0, 0, 0.5);
+      color: white;
+      border: none;
+      cursor: pointer;
+      padding: 10px;
+      margin: 0 10px;
+    }
+    button:hover {
+      background-color: rgba(0, 0, 0, 0.8);
+    }
+  </style>
+</head>
+<body>
+
+  <h3>Visualise changes in Low Tide Line</h3>
+  <img id="imageDisplay" src="" alt="Feature Image">
+  <div class="buttons">
+    <button id="prevBtn">&#8592; Previous</button>
+    <button id="nextBtn">Next &#8594;</button>
+  </div>
+
+  <script>
+    // Retrieve the featureId from the URL query parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const featureId = urlParams.get('id');
+    
+    if (!featureId) {
+      alert('Feature ID is missing!');
+      window.close(); // Close the tab if featureId is missing
+    }
+
+    const image_path = 'https://lowtideline.blob.core.windows.net/data/eo4ports/1_images/archive';
+    const dates = ['2024','2023','2022','2021','2020'];
+    const prefix = "Wadden_Sea"
+    const suffix = "lowtideline_v5"
+    let currentIndex = 0;
+
+    // Function to get the image URL based on the featureId and the date
+    const getImageUrl = (id, date) => `${image_path}/${date}/simple/${date}_${prefix}_${id}_${suffix}.jpg`;
+
+    // Update image based on current index
+    const updateImage = () => {
+      const imageUrl = getImageUrl(featureId, dates[currentIndex]);
+      document.getElementById('imageDisplay').src = imageUrl;
+    };
+
+    // Set the initial image
+    updateImage();
+
+    // Add event listeners to navigate through the images
+    document.getElementById('nextBtn').addEventListener('click', () => {
+      currentIndex = (currentIndex > 0) ? currentIndex - 1 : dates.length - 1;
+      updateImage();
+    });
+
+    document.getElementById('prevBtn').addEventListener('click', () => {
+      currentIndex = (currentIndex < dates.length - 1) ? currentIndex + 1 : 0;
+      updateImage();
+    });
+  </script>
+</body>
+</html>
