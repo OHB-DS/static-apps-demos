@@ -47,11 +47,12 @@
   <script>
     // Retrieve the featureId from the URL query parameters
     const urlParams = new URLSearchParams(window.location.search);
+    console.log(urlParams);
     const featureId = urlParams.get('featureId');
-    
+    console.log(featureId);
     if (!featureId) {
       alert('Feature ID is missing!');
-      window.close(); // Close the tab if featureId is missing
+      // window.close(); // Close the tab if featureId is missing
     }
 
     const image_path = 'https://lowtideline.blob.core.windows.net/data/ewenetz/timeseries_img_v1';
@@ -73,7 +74,7 @@
               '2024-10-03-10-46-04', '2024-10-05-10-36-06', '2024-10-15-10-36-05', '2024-10-18-10-46-03', 
               '2024-11-29-10-36-04', '2025-01-11-10-45-59'];
     }
-    console.log(dates)
+    // console.log(dates)
     let currentIndex = 0;
 
     // Function to get the image URL based on the featureId and the date
