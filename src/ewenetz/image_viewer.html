@@ -47,12 +47,10 @@
   <script>
     // Retrieve the featureId from the URL query parameters
     const urlParams = new URLSearchParams(window.location.search);
-    console.log(urlParams);
     const featureId = urlParams.get('featureId');
-    console.log(featureId);
     if (!featureId) {
       alert('Feature ID is missing!');
-      // window.close(); // Close the tab if featureId is missing
+      window.close(); // Close the tab if featureId is missing
     }
 
     const image_path = 'https://lowtideline.blob.core.windows.net/data/ewenetz/timeseries_img_v1';
