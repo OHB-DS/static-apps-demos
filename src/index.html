@@ -329,7 +329,7 @@
       ///////////////////////////////////////////////////////////////////////////
       const fp = "https://lowtideline.blob.core.windows.net/data/eo4ports/3_geojson";
       const years = [2020, 2021, 2022, 2023, 2024];
-      const colours = ["#d7191c", "#fdae61", "#32CD32", "#316d92", "black"]
+      const colours = ["#d7191c", "#fdae61", "#32CD32", "#0074FF", "black"]
       async function addLayersInOrder() {
           for (let i = years.length - 1; i >= 0; i--) {
               console.log(`Year: ${years[i]}`);
@@ -502,6 +502,29 @@
       //   return div;
       // };
       // legend.addTo(map);
+
+      // Add a legend to the map
+      var legend = L.control({ position: 'bottomright' });
+
+      legend.onAdd = function (map) {
+        var div = L.DomUtil.create('div', 'info legend');
+        div.style.backgroundColor = 'rgba(255, 255, 255, 0.9)'; // Light background with transparency
+        div.style.padding = '10px';
+        div.style.borderRadius = '5px';
+        div.style.fontFamily = 'Arial, sans-serif';
+        div.style.color = 'black'; // Set text color to black
+
+        div.innerHTML += "<h4 style='font-size: 16px; margin-bottom: 10px;'>Low Tide Lines</h4>";
+        const years = [2020, 2021, 2022, 2023, 2024];
+        const colours =  ["#d7191c", "#fdae61", "#32CD32", "#0074FF", "black"]; // Updated blue to #0074FF (electric blue)
+        for (let i = 0; i < years.length; i++) {
+          div.innerHTML += `<i style="background:${colours[i]}; width: 30px; height: 3px; display: inline-block; margin-right: 8px;"></i>
+                            <span style="font-size: 14px;">${years[i]}</span><br>`;
+        }
+        return div;
+      };
+
+      legend.addTo(map);
 
     </script>
 </body>
